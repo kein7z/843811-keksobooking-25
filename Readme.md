@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Роман Покидов](https://up.htmlacademy.ru/javascript/25/user/843811).
-* Наставник: `Неизвестно`.
+* Наставник: [Дмитрий Гуляев](https://htmlacademy.ru/profile/dima).
 
 ---
 
