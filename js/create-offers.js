@@ -1,7 +1,7 @@
 import {
   TITLES,
   DESCRIPTIONS,
-  TYPE,
+  TYPES,
   CHECKIN,
   CHECKOUT,
   FEATURES,
@@ -26,7 +26,7 @@ const createOffer = () => {
       rooms: getRandomInRange(1, 12),
       guests: getRandomInRange(1, 22),
       description: getRandomArrayElement(DESCRIPTIONS),
-      type: getRandomArrayElement(TYPE),
+      type: getRandomArrayElement(TYPES),
       checkin: getRandomArrayElement(CHECKIN),
       checkout: getRandomArrayElement(CHECKOUT),
       features: getRandomArrayFeatures(FEATURES),
