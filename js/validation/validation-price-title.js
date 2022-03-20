@@ -12,7 +12,10 @@ const pristine = new Pristine(offerForm, {
   errorTextClass: 'form__error'
 });
 
-const titleLength = (value) => value.length >= 30 && value.length <= 100;
+const MIN_LENGTH_TITLE = 30;
+const MAX_LENGTH_TITLE = 100;
+
+const titleLength = (value) => value.length >= MIN_LENGTH_TITLE && value.length <= MAX_LENGTH_TITLE;
 const priceMaxValue = (number) => number <= 100000;
 const priceMinValue = (number) => number > 0;
 
