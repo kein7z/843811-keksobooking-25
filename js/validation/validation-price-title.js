@@ -14,14 +14,21 @@ const pristine = new Pristine(offerForm, {
 
 const MIN_LENGTH_TITLE = 30;
 const MAX_LENGTH_TITLE = 100;
+const PRICE_MAX = 100000;
+const PRICE_MIN = 0;
+
 
 const titleLength = (value) => value.length >= MIN_LENGTH_TITLE && value.length <= MAX_LENGTH_TITLE;
-const priceMaxValue = (number) => number <= 100000;
-const priceMinValue = (number) => number > 0;
+const priceMaxValue = (number) => number <= PRICE_MAX;
+const priceMinValue = (number) => number > PRICE_MIN;
 
-pristine.addValidator(offerTitle, titleLength, 'От 30 до 100 символов');
-pristine.addValidator(offerPrice, priceMaxValue, 'Максимальная стоимость не может превышать 100 000');
-pristine.addValidator(offerPrice, priceMinValue, 'Минимальная стоимость должна быть больше 0');
+const titleLengthError = `От ${MIN_LENGTH_TITLE} до ${MAX_LENGTH_TITLE} символов`;
+const priceMaxError = `Максимальная стоимость не может превышать ${PRICE_MAX}`;
+const priceMinError = `Минимальная стоимость должна быть больше ${PRICE_MIN}`;
+
+pristine.addValidator(offerTitle, titleLength, titleLengthError);
+pristine.addValidator(offerPrice, priceMaxValue, priceMaxError);
+pristine.addValidator(offerPrice, priceMinValue, priceMinError);
 
 
 offerForm.addEventListener('submit', (evt) => {
