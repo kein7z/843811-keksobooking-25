@@ -16,7 +16,7 @@ const DESCRIPTIONS = [
   'Уютная квартира с видом на город'
 ];
 
-const TYPE = [
+const TYPES = [
   'palace',
   'flat',
   'house',
@@ -54,7 +54,7 @@ const PHOTOS = [
 export {
   TITLES,
   DESCRIPTIONS,
-  TYPE,
+  TYPES,
   CHECKIN,
   CHECKOUT,
   FEATURES,

@@ -1028,3 +1028,7 @@ fieldset {
 .hidden {
   display: none;
 }
+
+.ad-form__element-invalid {
+  color: #FF0000;
+}
