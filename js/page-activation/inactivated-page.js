@@ -10,4 +10,5 @@ const inactivatedPage = () => {
   mapElements.forEach((element) => element.setAttribute('disabled', ''));
 };
 
+inactivatedPage();
 export {form, formElements, mapFilters, mapElements, inactivatedPage};
