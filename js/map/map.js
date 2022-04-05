@@ -1,15 +1,18 @@
 import { activatedPage } from '../page-activation/activated-page.js';
-import { createOffers } from '../create-offers.js';
 import { createCustomPopup } from '../popup.js';
 
-const createOfferss = createOffers(7);
+const CENTER_MAP_LOCATION = {
+  lat: 35.69242,
+  lng: 139.77691,
+};
+
 const map = L.map('map-canvas')
   .on('load', () => {
     activatedPage();
   })
   .setView({
-    lat: 35.69242,
-    lng: 139.77691,
+    lat: CENTER_MAP_LOCATION.lat,
+    lng: CENTER_MAP_LOCATION.lng,
   }, 12);
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -25,8 +28,8 @@ const mainPinIcon = L.icon({
 });
 const marker = L.marker(
   {
-    lat: 35.69242,
-    lng: 139.77691,
+    lat: CENTER_MAP_LOCATION.lat,
+    lng: CENTER_MAP_LOCATION.lng,
   },
   {
     draggable: true,
@@ -47,15 +50,31 @@ const offerPinIcon = L.icon({
   iconAnchor: [26, 52],
 });
 
-createOfferss.forEach((element) => {
-  const markerOffer = L.marker({
-    lat: element['location']['lat'],
-    lng: element['location']['lng'],
-  },
-  {
-    icon: offerPinIcon,
+const renderOffers = (e) => {
+  e.forEach((element) => {
+    const markerOffer = L.marker({
+      lat: element['location']['lat'],
+      lng: element['location']['lng'],
+    },
+    {
+      icon: offerPinIcon,
+    });
+    markerOffer
+      .addTo(map)
+      .bindPopup(createCustomPopup(element));
   });
-  markerOffer
-    .addTo(map)
-    .bindPopup(createCustomPopup(element));
-});
+};
+
+const resetMap = () => {
+  map.setView({
+    lat: CENTER_MAP_LOCATION.lat,
+    lng: CENTER_MAP_LOCATION.lng,
+  }, 12);
+  marker.setLatLng({
+    lat: CENTER_MAP_LOCATION.lat,
+    lng: CENTER_MAP_LOCATION.lng,
+  });
+  map.clearLayers();
+  inputAddress();
+};
+export { resetMap, renderOffers };
