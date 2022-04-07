@@ -63,51 +63,51 @@ pristine.addValidator(offerCapacity, validateRoomsOptions, getDeliveryErrorMessa
 const resetForm = () => {
   mapFilters.reset();
   offerForm.reset();
-
   sliderElement.noUiSlider.updateOptions({
     start: 5000,
   });
   pristine.reset();
   resetMap();
+  offerPrice.value = 5000;
 };
 
 
 const buttonSubmit = document.querySelector('.ad-form__submit');
 
-const createSuccessMessage = (cb) => {
+const createSuccessMessage = (messageRemove) => {
   buttonSubmit.disabled = true;
   const successMessage = successMessageTemplate.cloneNode(true);
   document.body.append(successMessage);
-  cb(successMessage);
+  messageRemove(successMessage);
   resetForm();
 };
 
-const createErrorMessage = (cb) => {
+const createErrorMessage = (messageRemove) => {
   const errorMessage = errorMessageTemplate.cloneNode(true);
   document.body.append(errorMessage);
-  cb(errorMessage);
+  messageRemove(errorMessage);
 };
 
-function removeMessege (place) {
+function removeMessege (closeMessage) {
   buttonSubmit.disabled=false;
-  place.remove();
+  closeMessage.remove();
   document.removeEventListener('keydown', onRemoveMessage);
 }
 
-function onRemoveMessage (place) {
-  place.addEventListener('click', () => {
-    removeMessege(place);
+function onRemoveMessage (closeMessage) {
+  closeMessage.addEventListener('click', () => {
+    removeMessege(closeMessage);
   });
-  const button = place.querySelector('button');
+  const button = closeMessage.querySelector('button');
   if (button !== null) {
     button.addEventListener('click', () => {
-      removeMessege(place);
+      removeMessege(closeMessage);
     });
   }
   document.addEventListener('keydown', (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
-      removeMessege(place);
+      removeMessege(closeMessage);
     }
   });
 }
