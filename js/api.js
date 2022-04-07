@@ -1,3 +1,5 @@
+import { onRemoveMessage } from './validation/validation-form.js';
+
 const getData = (onSuccess) => {
   fetch('https://25.javascript.pages.academy/keksobooking/data')
     .then((response) => response.json())
@@ -6,23 +8,24 @@ const getData = (onSuccess) => {
     });
 };
 
-const sendData = (onSuccess, onFail, body) => {
+const sendData = (createSuccessMessage, createErrorMessage, formData) => {
   fetch(
     'https://25.javascript.pages.academy/keksobooking',
     {
       method: 'POST',
-      body,
+      body: formData,
     },
   )
     .then((response) => {
       if (response.ok) {
-        onSuccess();
+        createSuccessMessage(onRemoveMessage);
       } else {
-        onFail('Не удалось отправить форму. Попробуйте ещё раз');
+        createErrorMessage(onRemoveMessage);
       }
     })
     .catch(() => {
-      onFail('Не удалось отправить форму. Попробуйте ещё раз');
+      createErrorMessage(onRemoveMessage);
+
     });
 };
 

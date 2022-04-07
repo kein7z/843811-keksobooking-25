@@ -9,7 +9,8 @@ const offerTitle = offerForm.querySelector('#title');
 const offerPrice = offerForm.querySelector('#price');
 const resetButton = document.querySelector('.ad-form__reset');
 const mapFilters = document.querySelector('.map__filters');
-
+const successMessageTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorMessageTemplate = document.querySelector('#error').content.querySelector('.error');
 const pristine = new Pristine(offerForm, {
   classTo: 'ad-form__element',
   errorClass: 'ad-form__element-invalid',
@@ -59,7 +60,7 @@ pristine.addValidator(offerRoomNumber, validateRoomsOptions, getDeliveryErrorMes
 pristine.addValidator(offerCapacity, validateRoomsOptions, getDeliveryErrorMessage);
 
 
-const resetForms = () => {
+const resetForm = () => {
   mapFilters.reset();
   offerForm.reset();
 
@@ -71,25 +72,58 @@ const resetForms = () => {
 };
 
 
-const setOfferFormSubmit = (onSuccess, onFail, resetForm) => {
-  form.addEventListener('submit', (evt) => {
-    evt.preventDefault();
+const buttonSubmit = document.querySelector('.ad-form__submit');
 
-    const isValid = pristine.validate();
-    if (isValid) {
-      sendData(
-        () => onSuccess(),
-        () => onFail(),
-        new FormData(evt.target),
-        () => resetForm(),
-      );
-    }
-  });
+const createSuccessMessage = (cb) => {
+  buttonSubmit.disabled = true;
+  const successMessage = successMessageTemplate.cloneNode(true);
+  document.body.append(successMessage);
+  cb(successMessage);
+  resetForm();
 };
 
+const createErrorMessage = (cb) => {
+  const errorMessage = errorMessageTemplate.cloneNode(true);
+  document.body.append(errorMessage);
+  cb(errorMessage);
+};
 
-resetButton.addEventListener('click', () => {
-  resetForms();
+function removeMessege (place) {
+  buttonSubmit.disabled=false;
+  place.remove();
+  document.removeEventListener('keydown', onRemoveMessage);
+}
+
+function onRemoveMessage (place) {
+  place.addEventListener('click', () => {
+    removeMessege(place);
+  });
+  const button = place.querySelector('button');
+  if (button !== null) {
+    button.addEventListener('click', () => {
+      removeMessege(place);
+    });
+  }
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      removeMessege(place);
+    }
+  });
+}
+
+form.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const isValid = pristine.validate();
+  if (isValid) {
+    const formData = new FormData(evt.target);
+    sendData(createSuccessMessage, createErrorMessage, formData);
+  }
 });
 
-export { setOfferFormSubmit, resetForms };
+resetButton.addEventListener('click', () => {
+  resetForm();
+});
+
+export {onRemoveMessage };

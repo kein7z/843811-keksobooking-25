@@ -74,7 +74,7 @@ const resetMap = () => {
     lat: CENTER_MAP_LOCATION.lat,
     lng: CENTER_MAP_LOCATION.lng,
   });
-  map.clearLayers();
-  inputAddress();
+  map.closePopup();
+  inputAddress.value = `${CENTER_MAP_LOCATION.lat} ${CENTER_MAP_LOCATION.lng}`;
 };
 export { resetMap, renderOffers };
