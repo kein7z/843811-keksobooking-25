@@ -1,9 +1,13 @@
-import { createOffers } from './create-offers.js';
 import './popup.js';
-import './validation/validation-rooms-guests.js';
-import './validation/validation-price-title.js';
+import './validation/validation-form.js';
 import './page-activation/inactivated-page.js';
 import './map/map.js';
 import './slider-price.js';
+import {renderOffers} from './map/map.js';
+import { getData } from './api.js';
 
-createOffers();
+const OFFER_COUNT = 10;
+
+getData((offers) => {
+  renderOffers(offers.slice(0, OFFER_COUNT));
+});
