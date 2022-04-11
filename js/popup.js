@@ -19,13 +19,19 @@ const createCustomPopup = (offer) => {
   newOffer.querySelector('.popup__text--time').textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
   newOffer.querySelector('.popup__description').textContent = description;
 
-  if (features !== undefined) {
-    const modifieres = features.map((modFeatures) => `popup__feature--${modFeatures}`);
-    newOffer.querySelectorAll('.popup__feature').forEach((feature) => {
-      if (!modifieres.includes(feature.classList[1])) {
-        feature.remove();
+  const featuresContainerElement = newOffer.querySelector('.popup__features');
+  const featuresListFragment = document.createDocumentFragment();
+  if (features) {
+    features.forEach((offerFeatures) => {
+      const featureListItem = featuresContainerElement.querySelector(`.popup__feature--${offerFeatures}`);
+      if (featureListItem) {
+        featuresListFragment.append(featureListItem);
       }
     });
+    featuresContainerElement.innerHTML = '';
+    featuresContainerElement.append(featuresListFragment);
+  } else {
+    featuresContainerElement.remove();
   }
 
   if (photos !== undefined) {
@@ -44,5 +50,4 @@ const createCustomPopup = (offer) => {
   }
   return newOffer;
 };
-
 export { createCustomPopup };

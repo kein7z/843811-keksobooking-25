@@ -11,4 +11,4 @@ const inactivatedPage = () => {
 };
 
 inactivatedPage();
-export {form, formElements, mapFilters, mapElements, inactivatedPage};
+export { form, formElements, mapFilters, mapElements, inactivatedPage };

@@ -1,6 +1,9 @@
 import { activatedPage } from '../page-activation/activated-page.js';
 import { createCustomPopup } from '../popup.js';
+import { getSimilarOffers } from '../filters.js';
+import { OFFER_COUNT } from '../main.js';
 
+const inputAddress = document.querySelector('#address');
 const CENTER_MAP_LOCATION = {
   lat: 35.69242,
   lng: 139.77691,
@@ -26,6 +29,7 @@ const mainPinIcon = L.icon({
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
+
 const marker = L.marker(
   {
     lat: CENTER_MAP_LOCATION.lat,
@@ -38,7 +42,6 @@ const marker = L.marker(
 );
 marker.addTo(map);
 
-const inputAddress = document.querySelector('#address');
 marker.on('moveend', (evt) => {
   const { lat, lng } = evt.target.getLatLng();
   inputAddress.value = `${lat.toFixed(5)} ${lng.toFixed(5)}`;
@@ -50,22 +53,29 @@ const offerPinIcon = L.icon({
   iconAnchor: [26, 52],
 });
 
+const markerGroup = L.layerGroup().addTo(map);
+
 const renderOffers = (e) => {
-  e.forEach((element) => {
-    const markerOffer = L.marker({
-      lat: element['location']['lat'],
-      lng: element['location']['lng'],
-    },
-    {
-      icon: offerPinIcon,
+  markerGroup.clearLayers();
+  e
+    .filter(getSimilarOffers)
+    .slice(0, OFFER_COUNT)
+    .forEach((element) => {
+      const markerOffer = L.marker({
+        lat: element['location']['lat'],
+        lng: element['location']['lng'],
+      },
+      {
+        icon: offerPinIcon,
+      });
+      markerOffer
+        .addTo(markerGroup)
+        .bindPopup(createCustomPopup(element));
     });
-    markerOffer
-      .addTo(map)
-      .bindPopup(createCustomPopup(element));
-  });
 };
 
 const resetMap = () => {
+
   map.setView({
     lat: CENTER_MAP_LOCATION.lat,
     lng: CENTER_MAP_LOCATION.lng,
@@ -76,5 +86,6 @@ const resetMap = () => {
   });
   map.closePopup();
   inputAddress.value = `${CENTER_MAP_LOCATION.lat} ${CENTER_MAP_LOCATION.lng}`;
+
 };
 export { resetMap, renderOffers };
