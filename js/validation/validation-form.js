@@ -3,7 +3,6 @@ import { form } from '../page-activation/inactivated-page.js';
 import { resetMap } from '../map/map.js';
 import { sliderElement } from '../slider-price.js';
 
-
 const offerForm = document.querySelector('.ad-form');
 const offerTitle = offerForm.querySelector('#title');
 const offerPrice = offerForm.querySelector('#price');
@@ -11,6 +10,12 @@ const resetButton = document.querySelector('.ad-form__reset');
 const mapFilters = document.querySelector('.map__filters');
 const successMessageTemplate = document.querySelector('#success').content.querySelector('.success');
 const errorMessageTemplate = document.querySelector('#error').content.querySelector('.error');
+const offerRoomNumber = offerForm.querySelector('#room_number');
+const offerCapacity = offerForm.querySelector('#capacity');
+const selectRooms = offerForm.querySelector('[name="rooms"]');
+const selectCapacity = offerForm.querySelector('[name="capacity"]');
+const buttonSubmit = document.querySelector('.ad-form__submit');
+
 const pristine = new Pristine(offerForm, {
   classTo: 'ad-form__element',
   errorClass: 'ad-form__element-invalid',
@@ -25,24 +30,18 @@ const MAX_LENGTH_TITLE = 100;
 const PRICE_MAX = 100000;
 const PRICE_MIN = 0;
 
-
-const titleLength = (value) => value.length >= MIN_LENGTH_TITLE && value.length <= MAX_LENGTH_TITLE;
-const priceMaxValue = (number) => number <= PRICE_MAX;
-const priceMinValue = (number) => number > PRICE_MIN;
+const checkUpTitleLength = (value) => value.length >= MIN_LENGTH_TITLE && value.length <= MAX_LENGTH_TITLE;
+const checkUpPriceMaxValue = (number) => number <= PRICE_MAX;
+const checkUpPriceMinValue = (number) => number > PRICE_MIN;
 
 const titleLengthError = `От ${MIN_LENGTH_TITLE} до ${MAX_LENGTH_TITLE} символов`;
 const priceMaxError = `Максимальная стоимость не может превышать ${PRICE_MAX}`;
 const priceMinError = `Минимальная стоимость должна быть больше ${PRICE_MIN}`;
 
-pristine.addValidator(offerTitle, titleLength, titleLengthError);
-pristine.addValidator(offerPrice, priceMaxValue, priceMaxError);
-pristine.addValidator(offerPrice, priceMinValue, priceMinError);
+pristine.addValidator(offerTitle, checkUpTitleLength, titleLengthError);
+pristine.addValidator(offerPrice, checkUpPriceMaxValue, priceMaxError);
+pristine.addValidator(offerPrice, checkUpPriceMinValue, priceMinError);
 
-const offerRoomNumber = offerForm.querySelector('#room_number');
-const offerCapacity = offerForm.querySelector('#capacity');
-
-const selectRooms = offerForm.querySelector('[name="rooms"]');
-const selectCapacity = offerForm.querySelector('[name="capacity"]');
 const roomsOptions = {
   '1': ['1'],
   '2': ['1', '2'],
@@ -71,11 +70,18 @@ const resetForm = () => {
   offerPrice.value = 5000;
 };
 
+const blockButtonSubmit = () => {
+  buttonSubmit.disabled = true;
+  buttonSubmit.classList.add('ad-form--disabled');
+};
 
-const buttonSubmit = document.querySelector('.ad-form__submit');
+const unblockButtonSubmit = () => {
+  buttonSubmit.disabled = false;
+  buttonSubmit.classList.remove('ad-form--disabled');
+};
 
 const createSuccessMessage = (messageRemove) => {
-  buttonSubmit.disabled = true;
+  unblockButtonSubmit();
   const successMessage = successMessageTemplate.cloneNode(true);
   document.body.append(successMessage);
   messageRemove(successMessage);
@@ -83,18 +89,20 @@ const createSuccessMessage = (messageRemove) => {
 };
 
 const createErrorMessage = (messageRemove) => {
+  unblockButtonSubmit();
   const errorMessage = errorMessageTemplate.cloneNode(true);
   document.body.append(errorMessage);
   messageRemove(errorMessage);
 };
 
-function removeMessege (closeMessage) {
-  buttonSubmit.disabled=false;
-  closeMessage.remove();
-  document.removeEventListener('keydown', onRemoveMessage);
-}
+const onRemoveMessage = (closeMessage) => {
 
-function onRemoveMessage (closeMessage) {
+  const removeMessege = (closeMessages) => {
+
+    closeMessages.remove();
+    document.removeEventListener('keydown', onRemoveMessage);
+  };
+
   closeMessage.addEventListener('click', () => {
     removeMessege(closeMessage);
   });
@@ -110,13 +118,13 @@ function onRemoveMessage (closeMessage) {
       removeMessege(closeMessage);
     }
   });
-}
+};
 
 form.addEventListener('submit', (evt) => {
   evt.preventDefault();
-
   const isValid = pristine.validate();
   if (isValid) {
+    blockButtonSubmit();
     const formData = new FormData(evt.target);
     sendData(createSuccessMessage, createErrorMessage, formData);
   }
@@ -126,4 +134,4 @@ resetButton.addEventListener('click', () => {
   resetForm();
 });
 
-export {onRemoveMessage };
+export { onRemoveMessage };
