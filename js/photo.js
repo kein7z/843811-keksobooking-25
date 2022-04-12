@@ -27,7 +27,6 @@ fileChooserHouseImg.addEventListener('change', () => {
   if (matches && lengtHouseImgList < 1) {
     const imageHouse = document.createElement('img');
     imageHouse.src = URL.createObjectURL(fileHouseImg);
-    imageHouse.classList.add('photooss');
     imageHouse.alt = 'Фотография жилья';
     imageHouse.width = '70';
     imageHouse.height = '70';
