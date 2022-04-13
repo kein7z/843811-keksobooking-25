@@ -67,9 +67,9 @@ const resetForm = () => {
     start: 5000,
   });
   pristine.reset();
-  resetMap();
-  offerPrice.value = 5000;
   resetImg();
+  offerPrice.value = 5000;
+  resetMap();
 };
 
 const blockButtonSubmit = () => {
