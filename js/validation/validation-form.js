@@ -13,9 +13,25 @@ const successMessageTemplate = document.querySelector('#success').content.queryS
 const errorMessageTemplate = document.querySelector('#error').content.querySelector('.error');
 const offerRoomNumber = offerForm.querySelector('#room_number');
 const offerCapacity = offerForm.querySelector('#capacity');
-const selectRooms = offerForm.querySelector('[name="rooms"]');
-const selectCapacity = offerForm.querySelector('[name="capacity"]');
 const buttonSubmit = document.querySelector('.ad-form__submit');
+const offerTypeHouse = document.querySelector('#type');
+const offerTimeIn = document.querySelector('#timein');
+const offerTimeOut = document.querySelector('#timeout');
+
+const RoomsOptions = {
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0'],
+};
+
+const MinPricePerNight = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
 
 const pristine = new Pristine(offerForm, {
   classTo: 'ad-form__element',
@@ -29,36 +45,43 @@ const pristine = new Pristine(offerForm, {
 const MIN_LENGTH_TITLE = 30;
 const MAX_LENGTH_TITLE = 100;
 const PRICE_MAX = 100000;
-const PRICE_MIN = 0;
+
+offerTypeHouse.addEventListener('change', () => {
+  offerPrice.placeholder = MinPricePerNight[offerTypeHouse.value];
+});
 
 const checkUpTitleLength = (value) => value.length >= MIN_LENGTH_TITLE && value.length <= MAX_LENGTH_TITLE;
 const checkUpPriceMaxValue = (number) => number <= PRICE_MAX;
-const checkUpPriceMinValue = (number) => number > PRICE_MIN;
-
+const checkUpPriceMinValue = (number) =>  number >= MinPricePerNight[offerTypeHouse.value];
 const titleLengthError = `От ${MIN_LENGTH_TITLE} до ${MAX_LENGTH_TITLE} символов`;
 const priceMaxError = `Максимальная стоимость не может превышать ${PRICE_MAX}`;
-const priceMinError = `Минимальная стоимость должна быть больше ${PRICE_MIN}`;
+const priceMinError = () => `Минимальная стоимость должна быть больше ${MinPricePerNight[offerTypeHouse.value]}`;
 
 pristine.addValidator(offerTitle, checkUpTitleLength, titleLengthError);
 pristine.addValidator(offerPrice, checkUpPriceMaxValue, priceMaxError);
 pristine.addValidator(offerPrice, checkUpPriceMinValue, priceMinError);
 
-const roomsOptions = {
-  '1': ['1'],
-  '2': ['1', '2'],
-  '3': ['1', '2', '3'],
-  '100': ['0'],
-};
+const validateRoomsOptions = () => RoomsOptions[offerRoomNumber.value].includes(offerCapacity.value);
 
-const validateRoomsOptions = () => roomsOptions[selectRooms.value].includes(selectCapacity.value);
-
-const getDeliveryErrorMessage = () => (selectRooms.value === '100' || selectCapacity.value === '0')
+const getDeliveryErrorMessage = () => (offerRoomNumber.value === '100' || offerCapacity.value === '0')
   ? '100 комнат не для гостей'
   : 'количество комнат не должно превышать количество гостей';
 
 pristine.addValidator(offerRoomNumber, validateRoomsOptions, getDeliveryErrorMessage);
 pristine.addValidator(offerCapacity, validateRoomsOptions, getDeliveryErrorMessage);
 
+offerTimeIn.addEventListener('change', () => {
+  offerTimeOut.value = offerTimeIn.value;
+});
+offerTimeOut.addEventListener('change', () => {
+  offerTimeIn.value = offerTimeOut.value;
+});
+
+offerPrice.addEventListener('change', () => {
+  sliderElement.noUiSlider.updateOptions({
+    start: offerPrice.value,
+  });
+});
 
 const resetForm = () => {
   mapFilters.reset();
@@ -132,7 +155,8 @@ form.addEventListener('submit', (evt) => {
   }
 });
 
-resetButton.addEventListener('click', () => {
+resetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
   resetForm();
 });
 
