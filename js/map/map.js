@@ -42,6 +42,8 @@ const marker = L.marker(
 );
 marker.addTo(map);
 
+inputAddress.value = `${CENTER_MAP_LOCATION.lat} ${CENTER_MAP_LOCATION.lng}`;
+
 marker.on('moveend', (evt) => {
   const { lat, lng } = evt.target.getLatLng();
   inputAddress.value = `${lat.toFixed(5)} ${lng.toFixed(5)}`;
