@@ -2,6 +2,7 @@ import { sendData } from '../api.js';
 import { form } from '../page-activation/inactivated-page.js';
 import { resetMap } from '../map/map.js';
 import { sliderElement } from '../slider-price.js';
+import { resetImg } from '../photo.js';
 
 const offerForm = document.querySelector('.ad-form');
 const offerTitle = offerForm.querySelector('#title');
@@ -89,6 +90,7 @@ const resetForm = () => {
     start: 5000,
   });
   pristine.reset();
+  resetImg();
   offerPrice.value = 5000;
   resetMap();
 };
