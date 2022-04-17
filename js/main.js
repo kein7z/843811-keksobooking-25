@@ -5,12 +5,12 @@ import './map/map.js';
 import './slider-price.js';
 import { renderOffers } from './map/map.js';
 import { getData } from './api.js';
-import { filtresOffers } from './filters.js';
+import { filtersOffers } from './filters.js';
 const OFFER_COUNT = 10;
 
 getData((offers) => {
   renderOffers(offers.slice(0, OFFER_COUNT));
-  filtresOffers(() => renderOffers(offers));
+  filtersOffers(() => renderOffers(offers));
 });
 
 export { OFFER_COUNT };

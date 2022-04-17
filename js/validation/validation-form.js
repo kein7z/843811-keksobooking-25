@@ -1,8 +1,11 @@
 import { sendData } from '../api.js';
 import { form } from '../page-activation/inactivated-page.js';
-import { resetMap } from '../map/map.js';
+import { resetMap, renderOffers } from '../map/map.js';
 import { sliderElement } from '../slider-price.js';
 import { resetImg } from '../photo.js';
+import { getData } from '../api.js';
+import { filtersOffers } from '../filters.js';
+import { OFFER_COUNT } from '../main.js';
 
 const offerForm = document.querySelector('.ad-form');
 const offerTitle = offerForm.querySelector('#title');
@@ -33,6 +36,11 @@ const MinPricePerNight = {
   palace: 10000,
 };
 
+const MIN_LENGTH_TITLE = 30;
+const MAX_LENGTH_TITLE = 100;
+const PRICE_MAX = 100000;
+const DEFAULT_PRICE = 5000;
+
 const pristine = new Pristine(offerForm, {
   classTo: 'ad-form__element',
   errorClass: 'ad-form__element-invalid',
@@ -41,10 +49,6 @@ const pristine = new Pristine(offerForm, {
   errorTextTag: 'span',
   errorTextClass: 'form__error'
 });
-
-const MIN_LENGTH_TITLE = 30;
-const MAX_LENGTH_TITLE = 100;
-const PRICE_MAX = 100000;
 
 offerTypeHouse.addEventListener('change', () => {
   offerPrice.placeholder = MinPricePerNight[offerTypeHouse.value];
@@ -87,12 +91,16 @@ const resetForm = () => {
   mapFilters.reset();
   offerForm.reset();
   sliderElement.noUiSlider.updateOptions({
-    start: 5000,
+    start: DEFAULT_PRICE,
   });
   pristine.reset();
   resetImg();
-  offerPrice.value = 5000;
+  offerPrice.value = DEFAULT_PRICE;
   resetMap();
+  getData((offers) => {
+    renderOffers(offers.slice(0, OFFER_COUNT));
+    filtersOffers(() => renderOffers(offers));
+  });
 };
 
 const blockButtonSubmit = () => {

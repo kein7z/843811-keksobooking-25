@@ -61,10 +61,10 @@ const getSimilarOffers = (offer) => {
   }
 };
 
-const filtresOffers = (cb) => {
+const filtersOffers = (cb) => {
   filterForm.addEventListener('change', debounce(() => {
     cb();
   }, DELAY_FILTER));
 };
 
-export { getSimilarOffers, filtresOffers };
+export { getSimilarOffers, filtersOffers };
